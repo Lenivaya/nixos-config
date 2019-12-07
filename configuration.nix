@@ -6,6 +6,7 @@
   imports = [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
       ./zram-swap.nix
+      ./pkgs.nix
       ./develop.nix
   ];
 
@@ -14,7 +15,7 @@
   boot.loader.grub.version = 2;
   boot.loader.grub.device = "/dev/sda"; # or "nodev" for efi only
 
-  boot.kernelPackages = pkgs.linuxPackages_latest;
+  # boot.kernelPackages = pkgs.linuxPackages_latest;
 
   networking = {
     useDHCP = false;
@@ -40,6 +41,14 @@
 
   time.timeZone = "Europe/Kiev";
   location.provider = "geoclue2";
+
+  users = {
+    users.leniviy = {
+      isNormalUser = true;
+      extraGroups = [ "wheel" "networkmanager" "adbusers" ]; 
+    };
+    defaultUserShell = pkgs.zsh;
+  };
 
   services = {
     emacs = {
@@ -121,13 +130,7 @@
                                        '';
   };
 
-  users = {
-    users.leniviy = {
-      isNormalUser = true;
-      extraGroups = [ "wheel" "networkmanager" "adbusers" ]; 
-    };
-    defaultUserShell = pkgs.zsh;
-  };
+
 
   fonts = {
     fonts = with pkgs; [
@@ -145,27 +148,13 @@
       antialias = true; 
       hinting.enable = true;
       hinting.autohint = false;
-      includeUserConf = false;
+      includeUserConf = true;
       defaultFonts = {
         monospace = [ "Iosevka" ];
         sansSerif = [ "Iosevka" ];
         serif = [ "Iosevka" ];
       };
     };  
-  };
-
-  nixpkgs.config = {
-    allowBroken = false;
-    allowUnfree = true;
-  };
-
-  nixpkgs.config.packageOverrides = pkgs: {
-    nur = import (builtins.fetchTarball {
-      url = "https://github.com/nix-community/NUR/archive/3a6a6f4da737da41e27922ce2cfacf68a109ebce.tar.gz";
-      sha256 = "04387gzgl8y555b3lkz9aiw9xsldfg4zmzp930m62qw8zbrvrshd";
-  }) {
-      inherit pkgs;
-    };
   };
 
   environment.systemPackages = with pkgs; [
