@@ -1,21 +1,19 @@
-# Edit this configuration file to define what should be installed on
-# your system.  Help is available in the configuration.nix(5) man page
-# and in the NixOS manual (accessible by running ‘nixos-help’).  
 { config, pkgs, ... }:
+
 {
-  imports = [ # Include the results of the hardware scan.
+  imports = [
       ./hardware-configuration.nix
-      ./zram-swap.nix
-      ./pkgs.nix
-      ./develop.nix
+
+      ./modules/hardware.nix
+      ./modules/zram-swap.nix
+      ./modules/pkgs.nix
+#      ./modules/develop.nix
   ];
 
-  # Use the GRUB 2 boot loader.
-  boot.loader.grub.enable = true;
-  boot.loader.grub.version = 2;
-  boot.loader.grub.device = "/dev/sda"; # or "nodev" for efi only
-
-  # boot.kernelPackages = pkgs.linuxPackages_latest;
+  powerManagement = {
+    enable = true;
+    powertop.enable = true;
+  };
 
   networking = {
     useDHCP = false;
@@ -42,17 +40,30 @@
   time.timeZone = "Europe/Kiev";
   location.provider = "geoclue2";
 
+  nix = {
+    autoOptimiseStore = true;
+    gc = {
+      automatic = true;
+      dates = "23:00";
+      options = "--delete-older-than 30d";
+    };
+  };
+
   users = {
-    users.leniviy = {
+    extraUsers.leniviy = {
       isNormalUser = true;
       extraGroups = [ "wheel" "networkmanager" "adbusers" ]; 
     };
     defaultUserShell = pkgs.zsh;
   };
 
+  services.flatpak.enable = true;
+  xdg.portal.enable = true;
+
   services = {
     emacs = {
       enable = true;
+      package = pkgs.unstable.emacs;
       defaultEditor = true;
     };
 
@@ -66,7 +77,7 @@
     thermald.enable = true;
     acpid.enable = true;
     tlp.enable = true;
-    udisks2.enable = true;
+    upower.enable = true;
     devmon.enable = true;
     gvfs.enable = true;
     openssh.enable = true;
@@ -74,13 +85,10 @@
   };
   
   programs = {
-    zsh.enable = false;        # nixos config slow
+    zsh.enable = false;        # slow
     gnome-disks.enable = true;
     udevil.enable = true;
   }; 
-
-  sound.enable = true;
-  hardware.pulseaudio.enable = true;
 
   services.xserver = {
     autoRepeatDelay = 250;
@@ -90,47 +98,38 @@
     xkbOptions = "grp:win_space_toggle, caps:ctrl_modifier";
     xautolock = {
       enable = true;
-      time = 15;
-      notifier = '' ${pkgs.libnotify}/bin/notify-send "Locking in 10 seconds" '';
+      time = 5;
       locker = "${pkgs.betterlockscreen}/bin/betterlockscreen -l dim";
       extraOptions = [ "-lockaftersleep" ];
     };
 
-    windowManager.xmonad = {
-      enable = true;
-      extraPackages = haskellPackages: [                      
-        haskellPackages.xmonad-contrib_0_16                               
-        haskellPackages.xmonad-extras                                
-        haskellPackages.xmonad                                       
-        haskellPackages.xmobar
-      ];
+    windowManager = {
+      xmonad = {
+        enable = true;
+        haskellPackages = pkgs.unstable.haskellPackages;
+        extraPackages = haskellPackages: [
+          haskellPackages.xmonad-contrib_0_16
+          haskellPackages.xmonad-extras
+          haskellPackages.xmonad
+          haskellPackages.xmobar
+        ];
+     };
+      default = "xmonad";
     };
-    windowManager.default = "xmonad";
 
-    desktopManager.xterm.enable = false;
-    desktopManager.default = "none";
+    desktopManager = {
+      xterm.enable = false;
+    };
+
     displayManager.lightdm = {
       enable = true;
-      greeters.mini = {
-        enable = true;
-        user = "leniviy";
-        extraConfig = ''
-             [greeter]
-             show-password-label = false
-             [greeter-theme]
-             font = Iosevka
-             window-color = "#080800"
-        '';
+      greeters.gtk.theme = {
+        name = "Materia-dark";
+        package = pkgs.materia-theme;
       };
     };
-    displayManager.sessionCommands = ''xsetroot -cursor_name left_ptr
-                                       nitrogen --restore
-                                       compton -b
-                                       clight &
-                                       '';
+
   };
-
-
 
   fonts = {
     fonts = with pkgs; [
@@ -138,7 +137,7 @@
         noto-fonts-emoji
         corefonts
         fira-code
-        iosevka
+        unstable.iosevka
         tewi-font
         siji
     ];
@@ -158,10 +157,8 @@
   };
 
   environment.systemPackages = with pkgs; [
-    binutils gnumake openssl pkgconfig
-    wget curl sudo git dbus
-    xclip xorg.xkill compton               # Xorg
-    qutebrowser                            # Browser
+    wget curl git
+    xclip xorg.xkill unstable.compton               # Xorg
   ];
    
   # This value determines the NixOS release with which your system is to be
@@ -170,7 +167,10 @@
   # should.
   system = {
     stateVersion = "19.09";
-    autoUpgrade.enable = true;
+    autoUpgrade = {
+      enable = true;
+      dates = "04:00";
+    };
   };
 }
 
