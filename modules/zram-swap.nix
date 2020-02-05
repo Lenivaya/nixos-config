@@ -1,10 +1,9 @@
-{ config, pkgs, ... }:
 {
   zramSwap = {
     enable = true;
-    algorithm = "lz4";
-    memoryPercent = 40;
+    algorithm = "zstd";
+    memoryPercent = 25;
     numDevices = 1;
-    priority = 10;
+    priority = 1;
   };
 }

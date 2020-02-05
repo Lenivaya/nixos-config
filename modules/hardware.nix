@@ -1,6 +1,6 @@
-{ config, pkgs, ...}:
-{
+{ config, pkgs, ... }:
 
+{
   hardware.enableRedistributableFirmware = true;
 
   hardware.cpu.intel.updateMicrocode = true;
@@ -27,15 +27,4 @@
     enable = true;
     package = pkgs.pulseaudioFull;
   };
-
-  boot = {
-    loader = {
-      grub.enable = true;
-      grub.version = 2;
-      grub.device = "/dev/sda";
-    };
-    kernelPackages = pkgs.linuxPackages_latest;
-    cleanTmpDir = true;
-  };
-
 }

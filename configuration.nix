@@ -4,10 +4,7 @@
   imports = [
       ./hardware-configuration.nix
 
-      ./modules/hardware.nix
-      ./modules/zram-swap.nix
-      ./modules/pkgs.nix
-#      ./modules/develop.nix
+      ./modules
   ];
 
   powerManagement = {
@@ -52,13 +49,17 @@
   users = {
     extraUsers.leniviy = {
       isNormalUser = true;
-      extraGroups = [ "wheel" "networkmanager" "adbusers" ]; 
+      extraGroups = [ "wheel" "networkmanager" "adbusers"
+                      "docker" ];
     };
     defaultUserShell = pkgs.zsh;
   };
 
   services.flatpak.enable = true;
   xdg.portal.enable = true;
+
+  services.dbus.packages = with pkgs; [ gnome3.dconf ];
+  programs.dconf.enable = true;
 
   services = {
     emacs = {
@@ -68,6 +69,7 @@
     };
 
     xserver.enable = true;
+    xbanish.enable = true;
 
     clight = {
       enable = true;
@@ -124,8 +126,8 @@
     displayManager.lightdm = {
       enable = true;
       greeters.gtk.theme = {
-        name = "Materia-dark";
-        package = pkgs.materia-theme;
+        name = "Adwaita-dark";
+        package = pkgs.gnome3.gnome_themes_standard;
       };
     };
 
@@ -140,6 +142,7 @@
         unstable.iosevka
         tewi-font
         siji
+        symbola
     ];
 
     fontconfig = {
@@ -158,7 +161,7 @@
 
   environment.systemPackages = with pkgs; [
     wget curl git
-    xclip xorg.xkill unstable.compton               # Xorg
+    xclip xorg.xkill               # Xorg
   ];
    
   # This value determines the NixOS release with which your system is to be
@@ -169,7 +172,7 @@
     stateVersion = "19.09";
     autoUpgrade = {
       enable = true;
-      dates = "04:00";
+      dates = "weekly";
     };
   };
 }
