@@ -12,7 +12,6 @@
       sha256 = "04387gzgl8y555b3lkz9aiw9xsldfg4zmzp930m62qw8zbrvrshd";
   }) { inherit pkgs; };
 
-    unstable = import <unstable> {};
   };
 
 }

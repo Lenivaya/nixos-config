@@ -28,9 +28,12 @@
     ];
   };
 
+  console = {
+    font = "Lat2-Terminus16";
+    keyMap = "us";
+  };
+
   i18n = {
-    consoleFont = "Lat2-Terminus16";
-    consoleKeyMap = "us";
     defaultLocale = "en_US.UTF-8";
   };
 
@@ -64,7 +67,6 @@
   services = {
     emacs = {
       enable = true;
-      package = pkgs.unstable.emacs;
       defaultEditor = true;
     };
 
@@ -72,7 +74,7 @@
     xbanish.enable = true;
 
     clight = {
-      enable = true;
+      enable = false;
       settings = { no_gamma = true; };
     };
 
@@ -107,8 +109,7 @@
 
     windowManager = {
       xmonad = {
-        enable = true;
-        haskellPackages = pkgs.unstable.haskellPackages;
+        enable = false;
         extraPackages = haskellPackages: [
           haskellPackages.xmonad-contrib_0_16
           haskellPackages.xmonad-extras
@@ -116,15 +117,17 @@
           haskellPackages.xmobar
         ];
      };
-      default = "xmonad";
     };
 
     desktopManager = {
       xterm.enable = false;
+      gnome3.enable = true;
     };
+	
+    displayManager.gdm.enable = true;
 
     displayManager.lightdm = {
-      enable = true;
+      enable = false;
       greeters.gtk.theme = {
         name = "Adwaita-dark";
         package = pkgs.gnome3.gnome_themes_standard;
@@ -139,7 +142,7 @@
         noto-fonts-emoji
         corefonts
         fira-code
-        unstable.iosevka
+        iosevka
         tewi-font
         siji
         symbola
