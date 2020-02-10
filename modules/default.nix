@@ -5,7 +5,7 @@
     ./zram-swap.nix
     ./docker.nix
     ./overrides.nix
-
     ./boot
+    ./home-manager
   ];
 }

@@ -3,8 +3,9 @@
 {
   imports = [
       ./hardware-configuration.nix
-
       ./modules
+
+      <home-manager/nixos>
   ];
 
   powerManagement = {
@@ -28,12 +29,10 @@
     ];
   };
 
-  console = {
-    font = "Lat2-Terminus16";
-    keyMap = "us";
-  };
 
   i18n = {
+    consoleFont = "Lat2-Terminus16";
+    consoleKeyMap = "us";
     defaultLocale = "en_US.UTF-8";
   };
 
@@ -74,7 +73,7 @@
     xbanish.enable = true;
 
     clight = {
-      enable = false;
+      enable = true;
       settings = { no_gamma = true; };
     };
 
@@ -109,7 +108,8 @@
 
     windowManager = {
       xmonad = {
-        enable = false;
+        enable = true;
+	haskellPackages = pkgs.unstable.haskellPackages;
         extraPackages = haskellPackages: [
           haskellPackages.xmonad-contrib_0_16
           haskellPackages.xmonad-extras
@@ -121,13 +121,10 @@
 
     desktopManager = {
       xterm.enable = false;
-      gnome3.enable = true;
     };
 	
-    displayManager.gdm.enable = true;
-
     displayManager.lightdm = {
-      enable = false;
+      enable = true;
       greeters.gtk.theme = {
         name = "Adwaita-dark";
         package = pkgs.gnome3.gnome_themes_standard;
@@ -142,7 +139,7 @@
         noto-fonts-emoji
         corefonts
         fira-code
-        iosevka
+        unstable.iosevka
         tewi-font
         siji
         symbola
