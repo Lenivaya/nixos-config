@@ -11,7 +11,7 @@
     tmux
     maim scrot                          # Screenshots
     dunst                               # notification daemon
-    notify-osd
+    libnotify
     neofetch                            # fetch
     htop
     usbutils unzip zip unrar
@@ -29,10 +29,6 @@
     discord
     spotify
 
-    # Emacs as email client
-    mu
-    isync
-
     # Appearance
     qt5ct lxappearance
     plasma5.breeze-qt5
@@ -45,7 +41,6 @@
   ++
   (with pkgs.unstable; [
     vim neovim
-    alacritty
     starship
     nnn
     ranger
@@ -53,7 +48,6 @@
     jgmenu
     tdesktop
     betterlockscreen
-    qutebrowser
     pfetch
   ])
   ++
@@ -65,7 +59,6 @@
   ++
   (with pkgs.pantheon; [
     elementary-camera
-    elementary-calendar
     elementary-calculator
   ]);
 }

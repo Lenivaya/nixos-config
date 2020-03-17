@@ -6,6 +6,6 @@
     ./boot_efi.nix
   ];
 
-  boot.kernelPackages = pkgs.linuxPackages_latest;
+  #boot.kernelPackages = pkgs.linuxPackages_latest;
   boot.cleanTmpDir = true;
 }

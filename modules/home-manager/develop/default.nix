@@ -9,6 +9,12 @@
 
   home-manager.users.leniviy = { pkgs, ... }: {
     home.packages = with pkgs; [
+    #
+      gnumake
+
+    # Node.js
+      nodejs
+
     # Nix
       nixfmt
 

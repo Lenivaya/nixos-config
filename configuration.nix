@@ -5,7 +5,7 @@
       ./hardware-configuration.nix
       ./modules
 
-      <home-manager/nixos>
+       <home-manager/nixos>
   ];
 
   powerManagement = {
@@ -14,21 +14,17 @@
   };
 
   networking = {
-    useDHCP = false;
-    interfaces.enp5s0.useDHCP = true;
-    interfaces.wlp3s0.useDHCP = true;
+    # useDHCP = false;
+    # useNetworkd = true;
+    # interfaces.enp5s0.useDHCP = true;
+    # interfaces.wlp3s0.useDHCP = true;
     networkmanager.enable = true;
     # Open ports for KDE Connect
-    firewall.allowedTCPPorts = [
-                            1714 1715 1716 1717 1718 1719
-        1720 1721 1722 1723 1724 1725 1726 1727 1728 1729
-        1730 1731 1732 1733 1734 1735 1736 1737 1738 1739
-        1740 1741 1742 1743 1744 1745 1746 1747 1748 1749
-        1750 1751 1752 1753 1754 1755 1756 1757 1758 1759
-        1760 1761 1762 1763 1764
-    ];
+    firewall.allowedTCPPortRanges = [{
+      from = 1714;
+      to = 1764;
+    }];
   };
-
 
   i18n = {
     consoleFont = "Lat2-Terminus16";
@@ -53,12 +49,9 @@
       isNormalUser = true;
       extraGroups = [ "wheel" "networkmanager" "adbusers"
                       "docker" ];
+      shell = pkgs.zsh;
     };
-    defaultUserShell = pkgs.zsh;
   };
-
-  services.flatpak.enable = true;
-  xdg.portal.enable = true;
 
   services.dbus.packages = with pkgs; [ gnome3.dconf ];
   programs.dconf.enable = true;
@@ -69,13 +62,9 @@
       defaultEditor = true;
     };
 
+    clight.enable = true;
     xserver.enable = true;
     xbanish.enable = true;
-
-    clight = {
-      enable = true;
-      settings = { no_gamma = true; };
-    };
 
     thermald.enable = true;
     acpid.enable = true;
@@ -88,7 +77,14 @@
   };
   
   programs = {
-    zsh.enable = false;        # slow
+    zsh = {
+      enable = true;
+      # Slow
+      enableCompletion = false;
+      enableGlobalCompInit = false;
+      promptInit = "";
+      setOptions = [];
+    };
     gnome-disks.enable = true;
     udevil.enable = true;
   }; 
@@ -131,32 +127,6 @@
       };
     };
 
-  };
-
-  fonts = {
-    fonts = with pkgs; [
-        noto-fonts
-        noto-fonts-emoji
-        corefonts
-        fira-code
-        unstable.iosevka
-        tewi-font
-        siji
-        symbola
-    ];
-
-    fontconfig = {
-      subpixel.rgba = "rgb";
-      antialias = true; 
-      hinting.enable = true;
-      hinting.autohint = false;
-      includeUserConf = true;
-      defaultFonts = {
-        monospace = [ "Iosevka" ];
-        sansSerif = [ "Iosevka" ];
-        serif = [ "Iosevka" ];
-      };
-    };  
   };
 
   environment.systemPackages = with pkgs; [
